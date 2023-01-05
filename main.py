@@ -7,59 +7,51 @@ def rand():
 
 def exp(a):
     y = rand()
-    time_client = -1/a*math.log(y)
-    return time_client
+    rand_t = -1/a*math.log(y)
+    return rand_t
 
-def case_1(time_step, t_z, time_work, reject):
-    time_work += time_step + t_z
-    if time_work <= time_step:
-        N_1.append(time_step)
-    else:
-        case_2(time_step, t_z, time_work, reject)
+def start (N, case):
+    for i in range (N):
+        case.append(0)
+    return case
 
-def case_2(time_step, t_z, time_work, reject):
-    time_work += time_step + t_z
-    if time_work <= time_step:
-        N_1.append(time_step)
-    else:
-        case_3(time_step, t_z, time_work, reject)
+def model(time_client, t_z, case, time_work, reject):
+    # print(time_work)
+    # print(case)
+    for i in range(len(time_work)):
+        if time_work[i] <= time_client:
+            time_work[i] += time_client + t_z
+            case[i] += 1
+            # print(time_work)
+            # print(case)
+            break
+        if i == len(time_work) - 1:
+            reject[0] += 1
+    # print(reject)
 
-def case_3(time_step, t_z, time_work, reject):
-    time_work += time_step + t_z
-    if time_work <= time_step:
-        N_1.append(time_step)
-    else:
-        case_4(time_step, t_z, time_work, reject)
-
-def case_4(time_step, t_z, time_work, reject):
-    time_work += time_step + t_z
-    if time_work <= time_step:
-        N_1.append(time_step)
-    else:
-        reject += 1
+    return case, time_work, reject
 
 if __name__ == '__main__':
-    N_1 = []
-    N_2 = []
-    N_3 = []
-    N_4 = []
-    a = 1
-    T = 20
-    t_z = 18
-    reject = 0
+    iterate = 10000
+    N = 11
+    a = 2
+    T = 720
+    t_z = 4
+    reject = [0]
+    case = []
     # time_client = exp(a)
-    time_step = 0
+    time_client = 0
     # time_step += time_client
-    time_work = 0
-    while time_step < T:
-        time_client = exp(a)
-        print("time_client = ", time_client)
-        time_step += time_client
-        print("time_step = ", time_step)
-        case_1(time_step, t_z, time_work, reject)
+    time_work = []
+    case = start(N, case)
+    time_work = start(N, time_work)
+    while time_client < T:
+        rand_t = exp(a)
+        # print("rand_t = ", rand_t)
+        time_client += rand_t
+        # print("time_client = ", time_client)
+        model(time_client, t_z, case, time_work, reject)
 
-    print(N_1)
-    print(N_2)
-    print(N_3)
-    print(N_4)
-    print(reject)
+    print("Время работы кассы = ", time_work)
+    print("количество обработанных заявок = ", case)
+    print("количество потерянных покупателей = ", reject)
