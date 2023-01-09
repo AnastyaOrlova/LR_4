@@ -23,9 +23,14 @@ def model(time_client, t_z, case, time_work, reject, rand_t):
         if time_work[i] <= time_client:
             time_work[i] += rand_t + t_z
             case[i] += 1
+            print("client ", time_client)
             break
         if i == len(time_work) - 1:
             reject[0] += 1
+
+        print("time_work ", time_work)
+        print("case ", case)
+
 
 def iteration(time_client, case, time_work):
     while T > time_client:
@@ -48,8 +53,8 @@ def div(work, iterate):
     return work
 
 if __name__ == '__main__':
-    iterate = 1000
-    N = 8
+    iterate = 1
+    N = 10
     a = 1
     T = 720
     t_z = 4
