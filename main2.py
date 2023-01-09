@@ -21,28 +21,25 @@ def start (N, case):
 def model(time_client, t_z, case, time_work, reject, rand_t):
     for i in range(len(time_work)):
         if time_work[i] <= time_client:
-            time_work[i] += rand_t + t_z
+            time_work[i] += time_client - time_work[i] + t_z
             case[i] += 1
-            print("client ", time_client)
             break
         if i == len(time_work) - 1:
             reject[0] += 1
 
-        print("time_work ", time_work)
-        print("case ", case)
+    return case, time_work, reject
 
-
-def iteration(time_client, case, time_work):
-    while T > time_client:
+def iteration(time_client):
+    while time_client < T:
         rand_t = exp(a)
         time_client += rand_t
-        if time_client < T:
-            model(time_client, t_z, case, time_work, reject, rand_t)
+        model(time_client, t_z, case, time_work, reject, rand_t)
 
+    return case, time_work, reject
 
 def average(work, time_work):
     for i in range(len(time_work)):
-        work[i] += time_work[i]
+        work[i] = work[i] + time_work[i]
 
     return work
 
@@ -53,11 +50,12 @@ def div(work, iterate):
     return work
 
 if __name__ == '__main__':
-    iterate = 1
-    N = 10
+    iterate = 1000
+    N = 20
     a = 1
     T = 720
     t_z = 4
+
     count = []
     work = []
     rej = [0]
@@ -65,18 +63,17 @@ if __name__ == '__main__':
     count = start(N, count)
     j = 1
     while j <= iterate:
+        j += 1
+        time_client = 0
         case = []
+        case = start(N, case)
         time_work = []
         reject = [0]
-        case = start(N, case)
         time_work = start(N, time_work)
-        time_client = 0
-        j += 1
-        iteration(time_client, case, time_work)
+        iteration(time_client)
         work = average(work, time_work)
         count = average(count, case)
         rej = average(rej, reject)
-
 
     work = div(work, iterate)
     count = div(count, iterate)
